@@ -1,7 +1,9 @@
 import './style.css'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {int} from "three/nodes";
 
+const raycaster = new THREE.Raycaster()
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -22,10 +24,10 @@ const planeGeometry = new THREE.PlaneGeometry(
     50
 )
 const planeMaterial = new THREE.MeshPhongMaterial({
-    color: 0xff0000,
     side: THREE.DoubleSide,
     flatShading: true,
-    specular: 0x880088
+    specular: 0x880088,
+    vertexColors: true
 })
 const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial)
 
@@ -39,8 +41,19 @@ for (let i = 0; i < array.length; i += 3) {
     const y = array[i + 1]
     const z = array[i + 2]
 
-    array[i + 2] = z + Math.random()
+    array[i + 2] = z + Math.random() * 0.5
 }
+
+const planeColors = []
+for (let i = 0; i < array.length; i++) {
+    planeColors.push(0, 0, 0.2)
+}
+
+planeMesh.geometry.setAttribute(
+    'color',
+    new THREE.BufferAttribute(new Float32Array(planeColors), 3)
+)
+console.log(planeMesh.geometry.attributes)
 scene.add(planeMesh)
 
 
@@ -62,9 +75,25 @@ scene.add(backLight)
 new OrbitControls(camera, renderer.domElement)
 camera.position.z = 5
 
+const mousePos = {
+    x: undefined,
+    y: undefined
+}
+
 function animate() {
     requestAnimationFrame(animate)
     renderer.render(scene, camera)
+
+    raycaster.setFromCamera(mousePos, camera)
+    const intersects = raycaster.intersectObject(planeMesh)
+    if (intersects.length > 0) {
+
+    }
 }
 
 animate()
+
+addEventListener('mousemove', (event) => {
+    mousePos.x = (event.clientX / innerWidth) * 2 - 1
+    mousePos.y = -((event.clientY / innerHeight) * 2 - 1)
+})
