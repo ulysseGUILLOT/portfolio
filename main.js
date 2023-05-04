@@ -1,7 +1,8 @@
 import './style.css'
+
+import {gsap} from "gsap";
 import * as THREE from 'three'
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {int} from "three/nodes";
 
 const raycaster = new THREE.Raycaster()
 const scene = new THREE.Scene()
@@ -26,7 +27,7 @@ const planeGeometry = new THREE.PlaneGeometry(
 const planeMaterial = new THREE.MeshPhongMaterial({
     side: THREE.DoubleSide,
     flatShading: true,
-    specular: 0x880088,
+    //specular: 0x880088,
     vertexColors: true
 })
 const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial)
@@ -87,11 +88,29 @@ function animate() {
     raycaster.setFromCamera(mousePos, camera)
     const intersects = raycaster.intersectObject(planeMesh)
     if (intersects.length > 0) {
-        intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.a, 1)
-        intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.b, 1)
-        intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.c, 1)
 
-        intersects[0].object.geometry.attributes.color.needsUpdate = true
+        const initialColor = {
+            r: 0,
+            g: 0,
+            b: 0.2
+        }
+        const hoverColor = {
+            r: 0,
+            g: 0,
+            b: 0.6
+        }
+        gsap.to(hoverColor,{
+            r: initialColor.r,
+            g: initialColor.g,
+            b: initialColor.b,
+            duration: 2,
+            onUpdate: () => {
+                intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.a, hoverColor.r)
+                intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.b, hoverColor.g)
+                intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.c, hoverColor.b)
+                intersects[0].object.geometry.attributes.color.needsUpdate = true
+            }
+        })
     }
 }
 
