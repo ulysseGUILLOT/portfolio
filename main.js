@@ -14,6 +14,8 @@ const camera = new THREE.PerspectiveCamera(
 )
 const renderer = new THREE.WebGL1Renderer()
 
+camera.position.z = 5
+
 renderer.setSize(innerWidth, innerHeight)
 renderer.setPixelRatio(devicePixelRatio)
 document.body.appendChild(renderer.domElement)
@@ -27,7 +29,7 @@ const planeGeometry = new THREE.PlaneGeometry(
 const planeMaterial = new THREE.MeshPhongMaterial({
     side: THREE.DoubleSide,
     flatShading: true,
-    //specular: 0x880088,
+    specular: 0x880088,
     vertexColors: true
 })
 const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial)
@@ -65,17 +67,6 @@ const light = new THREE.DirectionalLight(
 light.position.set(0, 0, 1)
 scene.add(light)
 
-const backLight = new THREE.DirectionalLight(
-    0xffffff,
-    1
-)
-backLight.position.set(0, 0, -1)
-scene.add(backLight)
-
-
-new OrbitControls(camera, renderer.domElement)
-camera.position.z = 5
-
 const mousePos = {
     x: undefined,
     y: undefined
@@ -84,6 +75,13 @@ const mousePos = {
 function animate() {
     requestAnimationFrame(animate)
     renderer.render(scene, camera)
+
+    // Mettre à jour l'angle de la caméra en fonction de mousePos
+    const { x, y } = mousePos;
+    camera.rotation.x = -y/10
+    camera.rotation.y = -x/10
+
+
 
     raycaster.setFromCamera(mousePos, camera)
     const intersects = raycaster.intersectObject(planeMesh)
