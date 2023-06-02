@@ -105,8 +105,16 @@ function animate() {
             b: initialColor.b,
             duration: 2,
             onUpdate: () => {
-                intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.a, hoverColor.r)
-                intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.b, hoverColor.g)
+                intersects[0].object.geometry.attributes.color.setX(intersects[0].face.a, hoverColor.r)
+                intersects[0].object.geometry.attributes.color.setY(intersects[0].face.a, hoverColor.g)
+                intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.a, hoverColor.b)
+
+                intersects[0].object.geometry.attributes.color.setX(intersects[0].face.b, hoverColor.r)
+                intersects[0].object.geometry.attributes.color.setY(intersects[0].face.b, hoverColor.g)
+                intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.b, hoverColor.b)
+
+                intersects[0].object.geometry.attributes.color.setX(intersects[0].face.c, hoverColor.r)
+                intersects[0].object.geometry.attributes.color.setY(intersects[0].face.c, hoverColor.g)
                 intersects[0].object.geometry.attributes.color.setZ(intersects[0].face.c, hoverColor.b)
                 intersects[0].object.geometry.attributes.color.needsUpdate = true
             }
