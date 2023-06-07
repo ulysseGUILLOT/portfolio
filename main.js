@@ -3,6 +3,7 @@ import './style.css'
 import {gsap} from "gsap";
 import * as THREE from 'three'
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {sin} from "three/nodes";
 
 const raycaster = new THREE.Raycaster()
 const scene = new THREE.Scene()
@@ -35,20 +36,20 @@ const planeMaterial = new THREE.MeshPhongMaterial({
 const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial)
 
 // Affichage des coord des vertices du planeMesh
-const {array} = planeMesh.geometry.attributes.position
-console.log(array)
+const {array: meshPosition} = planeMesh.geometry.attributes.position
+console.log(meshPosition)
 
 // Randomisation de la profondeur des vertices du planeMesh
-for (let i = 0; i < array.length; i += 3) {
-    const x = array[i]
-    const y = array[i + 1]
-    const z = array[i + 2]
+for (let i = 0; i < meshPosition.length; i += 3) {
+    const x = meshPosition[i]
+    const y = meshPosition[i + 1]
+    const z = meshPosition[i + 2]
 
-    array[i + 2] = z + Math.random() * 0.5
+    meshPosition[i + 2] = z + Math.random() * 0.5
 }
 
 const planeColors = []
-for (let i = 0; i < array.length; i++) {
+for (let i = 0; i < meshPosition.length; i++) {
     planeColors.push(0, 0, 0.2)
 }
 
@@ -78,10 +79,8 @@ function animate() {
 
     // Mettre à jour l'angle de la caméra en fonction de mousePos
     const { x, y } = mousePos;
-    camera.rotation.x = -y/10
+    camera.rotation.x = y/10
     camera.rotation.y = -x/10
-
-
 
     raycaster.setFromCamera(mousePos, camera)
     const intersects = raycaster.intersectObject(planeMesh)
